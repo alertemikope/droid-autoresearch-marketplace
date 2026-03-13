@@ -1,0 +1,35 @@
+{
+  "description": "Hook scaffolding for resumable Droid autoresearch sessions",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${DROID_PLUGIN_ROOT}/hooks/session_start.py\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${DROID_PLUGIN_ROOT}/hooks/stop.py\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${DROID_PLUGIN_ROOT}/hooks/user_prompt_submit.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

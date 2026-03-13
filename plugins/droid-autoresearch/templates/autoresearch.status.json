@@ -1,0 +1,10 @@
+{
+  "mode": "inactive",
+  "objective": "",
+  "baseline_metric": null,
+  "best_metric": null,
+  "best_run": null,
+  "last_run_type": "",
+  "next_candidate": "",
+  "notes": []
+}

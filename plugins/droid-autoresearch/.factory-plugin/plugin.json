@@ -1,0 +1,8 @@
+{
+  "name": "droid-autoresearch",
+  "description": "Reusable Droid plugin for autonomous benchmark-and-iterate research loops with persistent playbooks and curation.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Alertehit"
+  }
+}
