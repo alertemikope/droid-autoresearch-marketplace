@@ -1,0 +1,14 @@
+{
+  "name": "droid-autoresearch-marketplace",
+  "description": "Public marketplace for the droid-autoresearch plugin.",
+  "owner": {
+    "name": "Alertehit"
+  },
+  "plugins": [
+    {
+      "name": "droid-autoresearch",
+      "description": "Reusable autoresearch plugin with skill, hooks, commands, templates, and worker droid.",
+      "source": "./plugins/droid-autoresearch"
+    }
+  ]
+}
