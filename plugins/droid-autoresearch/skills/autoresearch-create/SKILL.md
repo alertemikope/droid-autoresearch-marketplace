@@ -218,6 +218,55 @@ Example enriched log line:
 }
 ```
 
+## Human-friendly summary format
+
+When reporting a run result to the user, prefer simple language that a non-expert can understand quickly.
+
+Every run summary should clearly answer these questions in this order:
+
+1. what was tested
+2. was it kept or discarded
+3. what was the metric before
+4. what is the metric now
+5. how big is the gain or regression in percent
+6. whether checks still pass
+7. what happens next
+
+Prefer a compact format like:
+
+```text
+Run 56 kept.
+Tested: cache readiness lookup in CatalogReadStore.
+Metric: search_p95_ms went from 2.21 ms to 1.95 ms.
+Change: about 11.8% faster than baseline, about 1.9% faster than the previous best.
+Validation: checks still pass.
+Next: test whether exact single-token queries can skip another FTS variant.
+```
+
+Avoid vague summaries like `improved performance` or `looked better` without numbers.
+
+If the run is discarded, say so explicitly and explain why in plain language.
+
+For example:
+
+```text
+Run 57 discarded.
+Tested: more aggressive query shortcutting.
+Metric: search_p95_ms went from 1.95 ms to 2.08 ms.
+Change: about 6.7% slower than the current best.
+Validation: checks passed, but the speed result regressed.
+Next: try a smaller query-planning change instead.
+```
+
+At the end of a campaign, also provide a beginner-friendly final recap with:
+
+- starting baseline
+- final best result
+- total percent improvement
+- number of runs tested
+- number of kept runs
+- simplest explanation of what changed overall
+
 ## Decision rules
 
 - Primary metric decides keep vs discard.
