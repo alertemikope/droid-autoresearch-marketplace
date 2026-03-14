@@ -1,5 +1,9 @@
 {
   "mode": "inactive",
+  "auto_continue": false,
+  "target_runs": null,
+  "completed_runs_in_campaign": 0,
+  "campaign_label": "",
   "objective": "",
   "baseline_metric": null,
   "best_metric": null,

@@ -2,6 +2,30 @@ import json
 from pathlib import Path
 
 
+def _campaign_hint(status_path: Path) -> str:
+    try:
+        state = json.loads(status_path.read_text(encoding="utf-8"))
+    except Exception:
+        return ""
+
+    if state.get("mode") != "active":
+        return ""
+
+    parts: list[str] = []
+    label = str(state.get("campaign_label") or "").strip()
+    if label:
+        parts.append(f"campaign '{label}'")
+    target_runs = state.get("target_runs")
+    completed_runs = state.get("completed_runs_in_campaign")
+    if target_runs is not None:
+        parts.append(f"progress {completed_runs if completed_runs is not None else 0}/{target_runs}")
+    if state.get("auto_continue"):
+        parts.append("auto-continue enabled")
+    if not parts:
+        return ""
+    return "Active autoresearch campaign detected: " + ", ".join(parts) + "."
+
+
 def main() -> None:
     try:
         payload = json.load(__import__("sys").stdin)
@@ -34,6 +58,14 @@ def main() -> None:
         parts.append(f"Avoid repeating known-bad ideas from {failures}.")
     if status.exists():
         parts.append(f"Check current session state in {status} before choosing the next experiment.")
+        hint = _campaign_hint(status)
+        if hint:
+            parts.append(hint)
+
+    parts.append(
+        "The purpose of autoresearch is continuous improvement: once the benchmark and guardrails are valid, do not hesitate "
+        "to test many focused experiments instead of stopping after the first win."
+    )
 
     print(
         json.dumps(

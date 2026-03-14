@@ -28,7 +28,7 @@ Create and maintain these files in the project root unless the user asks otherwi
 - `autoresearch.ideas.md` — backlog of deferred promising ideas
 - `autoresearch.playbook.md` — validated durable lessons worth reusing in future runs
 - `autoresearch.failures.md` — dead ends, anti-patterns, and broken ideas that should not be retried blindly
-- `autoresearch.status.json` — current mode, baseline, best result, and next intended direction
+- `autoresearch.status.json` — current mode, baseline, best result, next intended direction, and campaign settings
 - `autoresearch.ps1` on Windows, otherwise `autoresearch.sh` — benchmark entrypoint
 - `autoresearch.checks.ps1` on Windows, otherwise `autoresearch.checks.sh` — optional checks gate
 
@@ -41,6 +41,7 @@ When starting a new autoresearch session:
    - benchmark command
    - primary metric name
    - whether lower or higher is better
+   - whether the user wants a fixed improvement campaign such as 20, 50, or 200 runs
    - files in scope
    - files or areas that are off-limits
    - required validations
@@ -59,6 +60,24 @@ When starting a new autoresearch session:
 7. Initialize `autoresearch.jsonl` only if missing.
 8. Initialize `autoresearch.playbook.md`, `autoresearch.failures.md`, and `autoresearch.status.json` if missing.
 9. Run the baseline before proposing aggressive changes.
+
+When a user asks for autoresearch before launching the loop, proactively ask whether they want a fixed run budget if they did not specify one. For example: 10 runs, 50 runs, 100 runs, or open-ended until stopped.
+
+If the user says things like:
+
+- `fais 50 runs`
+- `lance 100 runs`
+- `avance tout seul`
+- `continue sans me demander`
+
+then treat that as an explicit autonomous campaign request. Update `autoresearch.status.json` with fields such as:
+
+- `auto_continue`
+- `target_runs`
+- `completed_runs_in_campaign`
+- `campaign_label`
+
+and continue until the campaign is complete or a real blocker appears.
 
 ## Review phases for every experiment
 
@@ -123,6 +142,38 @@ Once setup is complete, follow this loop:
 17. Update `autoresearch.md` and `autoresearch.ideas.md` with useful learnings.
 18. Continue without asking whether to proceed unless the user explicitly wants manual control.
 
+If `target_runs` is set, keep iterating until `completed_runs_in_campaign >= target_runs` unless a hard failure, scope violation, or explicit user stop occurs.
+
+The purpose of autoresearch is continued improvement, not early satisfaction. Once the benchmark and validations are trustworthy, prefer testing many focused experiments over stopping after the first small win.
+
+## Never stop rule
+
+Once the experiment loop has begun after initial setup, do **not** pause to ask the human whether you should continue.
+
+Do **not** ask:
+
+- `should I keep going?`
+- `is this a good stopping point?`
+- `do you want more runs?`
+
+The human may be asleep, away from the keyboard, or intentionally expecting autonomous progress. Treat the loop as autonomous by default.
+
+The loop continues until one of these happens:
+
+- the human explicitly stops it
+- the configured campaign budget is exhausted
+- a hard blocker appears that cannot be responsibly resolved inside the declared scope
+
+If you run out of obvious ideas, do not stop. Think harder and widen the search while staying inside scope. For example:
+
+- re-read the in-scope files for new angles
+- re-read the benchmark and checks scripts for hidden bottlenecks
+- mine `autoresearch.playbook.md` and `autoresearch.failures.md` for combinations and near-misses
+- combine previous partial wins
+- try more structural changes after tactical gains flatten out
+- inspect referenced modules, nearby call sites, and existing implementation patterns
+- prefer many focused experiments over a premature summary
+
 ## Logging format
 
 Each line in `autoresearch.jsonl` should be a standalone JSON object like:
@@ -182,6 +233,7 @@ If these files already exist, treat the session as resumable state:
 - read `autoresearch.playbook.md` before retrying known-good ideas
 - read `autoresearch.failures.md` before repeating known-bad ideas
 - inspect `autoresearch.status.json` for current mode and best-known state
+- inspect `autoresearch.status.json` for current mode, best-known state, and autonomous campaign progress
 - prune or reuse `autoresearch.ideas.md`
 - continue from the last good baseline instead of re-initializing everything
 
@@ -190,6 +242,7 @@ If these files already exist, treat the session as resumable state:
 - Do not modify files outside the declared scope unless the user approves.
 - Do not silently weaken validation.
 - Do not stop after one successful experiment if the user asked for an autonomous loop.
+- Do not ask the human whether to continue once the loop is running unless the user explicitly requested manual checkpoints.
 - Keep the log append-only.
 - Never assume the benchmark script is trustworthy until you inspect it.
 - Preserve durable knowledge across runs; do not overwrite playbook or failures files with transient noise.

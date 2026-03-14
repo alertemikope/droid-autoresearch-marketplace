@@ -19,5 +19,12 @@ Then provide a concise status summary including:
 3. latest retained improvement
 4. pending ideas or next experiments
 5. whether the session appears active or inactive
+6. whether an autonomous campaign is in progress
+7. target runs and completed runs if present
+8. whether auto-continue is enabled
+
+If `autoresearch.status.json` contains campaign fields such as `target_runs`, `completed_runs_in_campaign`, `campaign_label`, or `auto_continue`, surface them explicitly.
+
+If the session is active, also mention whether Droid should continue improving autonomously and how far along the current campaign appears to be.
 
 If the user provided extra arguments in `$ARGUMENTS`, use them to focus the summary.
