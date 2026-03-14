@@ -22,9 +22,12 @@ Then provide a concise status summary including:
 6. whether an autonomous campaign is in progress
 7. target runs and completed runs if present
 8. whether auto-continue is enabled
+9. whether the current campaign appears completed
 
-If `autoresearch.status.json` contains campaign fields such as `target_runs`, `completed_runs_in_campaign`, `campaign_label`, or `auto_continue`, surface them explicitly.
+If `autoresearch.status.json` contains campaign fields such as `target_runs`, `completed_runs_in_campaign`, `campaign_label`, `auto_continue`, or `campaign_completed`, surface them explicitly.
 
 If the session is active, also mention whether Droid should continue improving autonomously and how far along the current campaign appears to be.
+
+If the campaign budget appears reached, mention that the loop should stop cleanly, summarize the final state, and wait for a new user instruction instead of starting a fresh campaign automatically.
 
 If the user provided extra arguments in `$ARGUMENTS`, use them to focus the summary.

@@ -2,6 +2,17 @@ import json
 from pathlib import Path
 
 
+def _campaign_finished(state: dict) -> bool:
+    target_runs = state.get("target_runs")
+    completed_runs = state.get("completed_runs_in_campaign")
+    if target_runs is None:
+        return bool(state.get("campaign_completed"))
+    try:
+        return int(completed_runs or 0) >= int(target_runs)
+    except Exception:
+        return bool(state.get("campaign_completed"))
+
+
 def main() -> None:
     try:
         payload = json.load(__import__("sys").stdin)
@@ -21,6 +32,9 @@ def main() -> None:
     try:
         state = json.loads(status.read_text(encoding="utf-8"))
     except Exception:
+        return
+
+    if _campaign_finished(state):
         return
 
     if state.get("mode") != "active":

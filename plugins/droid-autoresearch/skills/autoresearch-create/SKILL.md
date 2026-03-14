@@ -72,6 +72,7 @@ If the user says things like:
 
 then treat that as an explicit autonomous campaign request. Update `autoresearch.status.json` with fields such as:
 
+- `campaign_completed`
 - `auto_continue`
 - `target_runs`
 - `completed_runs_in_campaign`
@@ -144,6 +145,8 @@ Once setup is complete, follow this loop:
 
 If `target_runs` is set, keep iterating until `completed_runs_in_campaign >= target_runs` unless a hard failure, scope violation, or explicit user stop occurs.
 
+When the campaign budget is reached, stop cleanly instead of starting a new autonomous campaign. Mark the campaign as completed in `autoresearch.status.json`, disable `auto_continue`, summarize the final result, and wait for a fresh user instruction before launching another campaign.
+
 The purpose of autoresearch is continued improvement, not early satisfaction. Once the benchmark and validations are trustworthy, prefer testing many focused experiments over stopping after the first small win.
 
 ## Never stop rule
@@ -163,6 +166,8 @@ The loop continues until one of these happens:
 - the human explicitly stops it
 - the configured campaign budget is exhausted
 - a hard blocker appears that cannot be responsibly resolved inside the declared scope
+
+Exhausting the configured campaign budget means the loop should end cleanly, not roll into a new campaign automatically.
 
 If you run out of obvious ideas, do not stop. Think harder and widen the search while staying inside scope. For example:
 
