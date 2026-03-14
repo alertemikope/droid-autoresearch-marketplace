@@ -63,6 +63,15 @@ When starting a new autoresearch session:
 
 When a user asks for autoresearch before launching the loop, proactively ask whether they want a fixed run budget if they did not specify one. For example: 10 runs, 50 runs, 100 runs, or open-ended until stopped.
 
+Do not confuse explanation requests with resume requests. If the user asks things like:
+
+- `explique plus simplement`
+- `résume les résultats`
+- `tu as mis à jour le code ?`
+- `qu'est-ce qui a été amélioré ?`
+
+then answer clearly without launching a new experiment. Only resume the loop when the user explicitly asks to continue, restart, launch more runs, or keep going.
+
 If the user says things like:
 
 - `fais 50 runs`
@@ -160,6 +169,8 @@ Do **not** ask:
 - `do you want more runs?`
 
 The human may be asleep, away from the keyboard, or intentionally expecting autonomous progress. Treat the loop as autonomous by default.
+
+But autonomy does not mean hijacking ordinary conversation. If the user is clearly asking for explanation, recap, clarification, or confirmation, answer that request first and do not silently restart the loop.
 
 The loop continues until one of these happens:
 
